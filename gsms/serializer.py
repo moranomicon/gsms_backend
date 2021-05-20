@@ -2,6 +2,7 @@ from django.urls import path, include
 from django.utils import timezone
 from rest_framework import routers, serializers, viewsets
 from .models import Material, MaterialChangeHistory, PackingListChangeHistory, PackingList
+from django.contrib.auth.models import User
 
 
 class MaterialSerializer(serializers.ModelSerializer):
@@ -53,3 +54,13 @@ class UpdatePackingListSerializer(serializers.Serializer):
     packing_change_date = serializers.DateTimeField(default=timezone.now)
     weight = serializers.FloatField()
     weight_out = serializers.IntegerField(required=False, default=0)
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+        write_only_fields = ('password',)
+        read_only_fields = ('id',)
+
+   
