@@ -1,8 +1,8 @@
 from datetime import datetime
 from django.contrib.auth.models import User
 from rest_framework.response import Response
-from gsms.serializer import MaterialChangeHistorySerializer, MaterialSerializer, PackingListChangeHistorySerializer, PackingListSerializer, UpdateMaterialSerializer, UpdatePackingListSerializer, UserSerializer
-from gsms.models import Material, MaterialChangeHistory, PackingList, PackingListChangeHistory
+from gsms.serializer import MaterialChangeHistorySerializer, MaterialSerializer, PackingListChangeHistorySerializer, PackingListSerializer, TransferLocationSerializer, UpdateMaterialSerializer, UpdatePackingListSerializer, UserSerializer
+from gsms.models import Material, MaterialChangeHistory, PackingList, PackingListChangeHistory, TransferLocation
 from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -10,6 +10,10 @@ from django.db.models import Sum
 
 
 # Create your views here.
+class TransferLocationViewSet(viewsets.ModelViewSet):
+    queryset = TransferLocation.objects.all()
+    serializer_class = TransferLocationSerializer
+
 class MaterialViewSet(viewsets.ModelViewSet):
     queryset = Material.objects.all()
     serializer_class = MaterialSerializer
@@ -60,7 +64,7 @@ class PackingListViewSet(viewsets.ModelViewSet):
 
             if serializer.data.get('weight_out'):
                 PackingListChangeHistory.objects.create(
-                    packing_list=packing_list, old_weight=packing_list.weight, weight_out=serializer.data.get('weight_out'), packing_change_date=serializer.data.get('packing_change_date'))
+                    packing_list=packing_list, old_weight=packing_list.weight, weight_out=serializer.data.get('weight_out'), transfer_to=TransferLocation(pk=serializer.data.get('transfer_to')), packing_change_date=serializer.data.get('packing_change_date'))
                 packing_list.weight = packing_list.weight - \
                     serializer.data.get('weight_out')
             else:
@@ -112,7 +116,7 @@ class DashboardViewSet(viewsets.ViewSet):
 
     @action(detail=False,  methods=['get'])
     def total_material(self, request):
-        total_material = Material.objects.count()
+        total_material = Material.objects.aggregate(Sum('material_quantity'))['material_quantity__sum']
         return Response(total_material)
 
     @action(detail=False,  methods=['get'])

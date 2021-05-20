@@ -3,6 +3,10 @@ from django.db import models
 # Create your models here.
 
 
+class TransferLocation(models.Model):
+    name = models.IntegerField(primary_key=True)
+    description = models.TextField()
+
 class Material(models.Model):
     material_name = models.CharField(max_length=50)
     material_quantity = models.PositiveIntegerField()
@@ -44,8 +48,11 @@ class PackingListChangeHistory(models.Model):
     packing_list = models.ForeignKey(PackingList, on_delete=models.DO_NOTHING)
     old_weight = models.PositiveIntegerField()
     weight_out = models.IntegerField()
+    transfer_to = models.ForeignKey(TransferLocation, on_delete=models.DO_NOTHING, blank=True, null=True)
     packing_change_date = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+
 
 # class Pallet(models.Model):
 #     packing_list = models.ForeignKey(PackingList, on_delete=models.RESTRICT)

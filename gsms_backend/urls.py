@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from gsms.views import DashboardViewSet, MaterialChangeHistoryViewSet, MaterialViewSet, PackingListChangeHistoryViewSet, PackingListViewSet, UserViewSet
+from gsms.views import DashboardViewSet, MaterialChangeHistoryViewSet, MaterialViewSet, PackingListChangeHistoryViewSet, PackingListViewSet, TransferLocationViewSet, UserViewSet
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
@@ -25,6 +25,8 @@ router.register(r'packing-list', PackingListViewSet)
 router.register(r'material-change-history', MaterialChangeHistoryViewSet)
 router.register(r'packinglist-change-history', PackingListChangeHistoryViewSet)
 router.register(r'users', UserViewSet)
+router.register(r'transfer-location', TransferLocationViewSet)
+
 router.register(r'dashboard', DashboardViewSet, basename='dashboard')
 
 

@@ -1,9 +1,14 @@
 from django.urls import path, include
 from django.utils import timezone
 from rest_framework import routers, serializers, viewsets
-from .models import Material, MaterialChangeHistory, PackingListChangeHistory, PackingList
+from .models import Material, MaterialChangeHistory, PackingListChangeHistory, PackingList, TransferLocation
 from django.contrib.auth.models import User
 
+
+class TransferLocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TransferLocation
+        fields = '__all__'
 
 class MaterialSerializer(serializers.ModelSerializer):
     class Meta:
@@ -51,6 +56,7 @@ class UpdateMaterialSerializer(serializers.Serializer):
 class UpdatePackingListSerializer(serializers.Serializer):
     packing_no = serializers.CharField()
     material_name = serializers.IntegerField()
+    transfer_to = serializers.IntegerField()
     packing_change_date = serializers.DateTimeField(default=timezone.now)
     weight = serializers.FloatField()
     weight_out = serializers.IntegerField(required=False, default=0)
