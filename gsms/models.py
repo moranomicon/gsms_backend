@@ -41,6 +41,7 @@ class MaterialChangeHistory(models.Model):
     material_in_qty = models.IntegerField()
     material_out_qty = models.IntegerField()
     material_change_date = models.DateTimeField()
+    transfer_to = models.ForeignKey(TransferLocation, on_delete=models.DO_NOTHING, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
@@ -48,7 +49,6 @@ class PackingListChangeHistory(models.Model):
     packing_list = models.ForeignKey(PackingList, on_delete=models.DO_NOTHING)
     old_weight = models.PositiveIntegerField()
     weight_out = models.IntegerField()
-    transfer_to = models.ForeignKey(TransferLocation, on_delete=models.DO_NOTHING, blank=True, null=True)
     packing_change_date = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
 

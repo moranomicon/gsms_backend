@@ -51,12 +51,12 @@ class UpdateMaterialSerializer(serializers.Serializer):
     material_out = serializers.IntegerField(required=False, default=0)
     material_change_date = serializers.DateTimeField(default=timezone.now)
     material_quantity = serializers.IntegerField()
+    transfer_to = serializers.IntegerField(required=False)
 
 
 class UpdatePackingListSerializer(serializers.Serializer):
     packing_no = serializers.CharField()
     material_name = serializers.IntegerField()
-    transfer_to = serializers.IntegerField()
     packing_change_date = serializers.DateTimeField(default=timezone.now)
     weight = serializers.FloatField()
     weight_out = serializers.IntegerField(required=False, default=0)
