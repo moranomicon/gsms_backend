@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.contrib.auth.models import User
+from django.utils import translation
 from rest_framework.response import Response
 from gsms.serializer import MaterialChangeHistorySerializer, MaterialSerializer, PackingListChangeHistorySerializer, PackingListSerializer, TransferLocationSerializer, UpdateMaterialSerializer, UpdatePackingListSerializer, UserSerializer
 from gsms.models import Material, MaterialChangeHistory, PackingList, PackingListChangeHistory, TransferLocation
@@ -7,6 +8,7 @@ from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from django.db.models import Sum
+from django.db import transaction
 
 
 # Create your views here.
@@ -52,6 +54,14 @@ class MaterialViewSet(viewsets.ModelViewSet):
 class PackingListViewSet(viewsets.ModelViewSet):
     queryset = PackingList.objects.all()
     serializer_class = PackingListSerializer
+
+    @transaction.atomic
+    def destroy(self, request, *args, **kwargs):
+        #delete all history b4 deleting the packing list
+        packing_list = self.get_object()
+        PackingListChangeHistory.objects.filter(packing_list=packing_list.pk).delete()
+
+        return super().destroy(request, *args, **kwargs)
 
     @action(detail=True,  methods=['put', 'patch', 'post'])
     def update_packing_list(self, request, pk=None):
